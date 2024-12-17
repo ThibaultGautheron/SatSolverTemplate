@@ -1,4 +1,4 @@
-# SatSolverTemplate
+# SatSolverTemplate Thibault Gautheron et Aurélien Pasquet
 SAT solver template for a course (TP) at INSA Toulouse.
 
 ## Setup
