@@ -24,18 +24,20 @@ namespace sat {
        std::vector<Clause> reduced;
        for (const ClausePointer clause : clauses){
             bool satisfiedClause = false;
-            std::vector<Literal> finalClause = *clause;
+            Clause simplifiedClause;
 
             for(const Literal literal : *clause){
-                if(satisfied(literal)) satisfiedClause = true;
-                else if(falsified(literal)) finalClause.erase(std::remove(finalClause.begin(),finalClause.end(), literal), finalClause.end());
+                if(satisfied(literal)){
+                    satisfiedClause = true;
+                    break;
+                } 
+                else if(!falsified(literal)) simplifiedClause.push_back(literal);
             }
-            if(!satisfiedClause){
-                reduced.push_back(finalClause);
+            if (!satisfiedClause && !simplifiedClause.empty()) {
+                reduced.push_back(simplifiedClause);
             }
 
         }
-        reduced.push_back(unitLiterals);
         return reduced;
 
        }
@@ -112,4 +114,53 @@ find the last literal and add it to the list of true literals // Θ(|ci |) at mo
         }
         return true;*/
     }
+
+    bool Solver::unitPropagate() {
+        std::deque<Literal> propagationQueue;
+
+        // Ajouter les littéraux unitaires initiaux à la file de propagation
+        for (const ClausePointer& clause : clauses) {
+            if (clause->size() == 1) {
+                Literal unitLiteral = clause->at(0);
+                if (!assign(unitLiteral)) {
+                    return false; // Contradiction détectée
+                }
+                propagationQueue.push_back(unitLiteral);
+            }
+        }
+
+        while (!propagationQueue.empty()) {
+            Literal current = propagationQueue.front();
+            propagationQueue.pop_front();
+
+            // Parcourir toutes les clauses surveillées par ce littéral
+            for (const ClausePointer& clause : watchedBy.at(var(current).get())) {
+                int falseCount = 0;
+                Literal unassignedLiteral;
+
+                for (const Literal literal : *clause) {
+                    if (falsified(literal)) {
+                        falseCount++;
+                    } else if (!satisfied(literal)) {
+                        unassignedLiteral = literal;
+                    }
+                }
+
+                // Vérifier les conditions de propagation
+                if (falseCount == clause->size()) {
+                    return false; // Contradiction détectée
+                }
+
+                if (falseCount == clause->size() - 1 && !satisfied(unassignedLiteral)) {
+                    if (!assign(unassignedLiteral)) {
+                        return false; // Contradiction détectée
+                    }
+                    propagationQueue.push_back(unassignedLiteral);
+                }
+            }
+        }
+
+        return true;
+    }
+
 } // sat
