@@ -65,7 +65,7 @@ namespace sat {
          * see also sat::pos and sat::neg
          */
         Literal(unsigned val);
-
+        Literal();
         /**
          * Gets the underlying literal identifier
          * @return the literal identifier

@@ -86,8 +86,8 @@ if #fi = |ci | then return FAIL
 if #fi = |ci | − 1 then
 find the last literal and add it to the list of true literals // Θ(|ci |) at most once per clause: O(s)*/
 
-    bool Solver::unitPropagate() {
-       /* std::vector<std::size_t> counter_f;
+    /*bool Solver::unitPropagate() {
+        std::vector<std::size_t> counter_f;
         std::deque<Variable> truthList;
         for(std::size_t var_id = 0; var_id < model.size(); var_id++){
             
@@ -112,8 +112,8 @@ find the last literal and add it to the list of true literals // Θ(|ci |) at mo
                 }
             }
         }
-        return true;*/
-    }
+        return true;
+    }*/
 
     bool Solver::unitPropagate() {
         std::deque<Literal> propagationQueue;

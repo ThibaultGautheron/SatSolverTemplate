@@ -26,6 +26,7 @@ namespace sat {
     Literal::Literal(unsigned val) {
         lid = val;
     }
+    Literal::Literal(){}
 
     unsigned Literal::get() const {
         return lid;
